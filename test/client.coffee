@@ -61,6 +61,14 @@ class GERClient
     request(req)
     .then(process_response)
 
+  delete_events: (namespace,thing) ->
+    req = {
+      method: "DELETE",
+      uri: "#{@server_uri}/events/#{namespace}/#{thing}"
+    }
+    request(req)
+    .then(process_response)
+
   show_events: (namespace, person, action, thing) ->
     uri = "#{@server_uri}/events?"
     params = []

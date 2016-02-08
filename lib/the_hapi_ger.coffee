@@ -147,6 +147,24 @@ GERAPI =
         .catch((err) -> Utils.handle_error(request, err, reply) )
     )
 
+    #DELETE delete event
+    plugin.route(
+      method: 'DELETE',
+      path: '/events/{namespace}/{thing}',
+      handler: (request, reply) =>
+        namespace = request.params.namespace
+        thing = request.params.thing
+        ger.namespace_exists(namespace)
+        .then( (exists) ->
+          throw Boom.notFound() if !exists
+          ger.delete_events(namespace, {thing: thing})
+        )
+        .then( ->
+          reply({namespace: namespace})
+        )
+        .catch((err) -> Utils.handle_error(request, err, reply) )
+    )
+
     #GET event information
     plugin.route(
       method: 'GET',
