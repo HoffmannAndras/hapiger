@@ -3,23 +3,23 @@ describe 'events routes', ->
     it 'should work', ->
       ns = random_namespace()
       start_server
-      .then( ->
+      .then(->
         client.create_namespace(ns)
       )
-      .then( ->
+      .then(->
         client.create_events([{namespace: ns, person: 'p', action: 'a', thing: 't1'}])
       )
-      .spread( (body, resp) ->
+      .spread((body, resp) ->
         body.events[0].person.should.equal 'p'
       )
 
     it 'should 404 on bad namespace', ->
       ns = random_namespace()
       start_server
-      .then( ->
+      .then(->
         client.create_events([{namespace: ns, person: 'p', action: 'a', thing: 't1'}])
       )
-      .then( ->
+      .then(->
         throw "SHOULD NOT GET HERE"
       )
       .catch(GERClient.Not200Error, (e) ->
@@ -30,16 +30,16 @@ describe 'events routes', ->
     it 'should recall events', ->
       ns = random_namespace()
       start_server
-      .then( ->
+      .then(->
         client.create_namespace(ns)
       )
-      .then( ->
+      .then(->
         client.create_events([{namespace: ns, person: 'p', action: 'a', thing: 't1'}])
       )
-      .spread( (body, resp) ->
+      .spread((body, resp) ->
         client.show_events(ns, 'p')
       )
-      .spread( (body, resp) ->
+      .spread((body, resp) ->
         body.events[0].person.should.equal 'p'
       )
 
@@ -48,16 +48,16 @@ describe 'events routes', ->
     it 'should remove event', ->
       ns = random_namespace()
       start_server
-      .then( ->
+      .then(->
         client.create_namespace(ns)
       )
-      .then( ->
+      .then(->
         client.create_events([{namespace: ns, person: 'p', action: 'a', thing: 't1'}])
       )
-      .then( ->
-        client.delete_events(ns, { thing: 't1'})
+      .then(->
+        client.delete_events(ns, {thing: 't1'})
       )
-      .spread( (body, resp) ->
+      .spread((body, resp) ->
         client.show_events(ns, 'p')
       )
       .catch(GERClient.Not200Error, (e) ->

@@ -3,30 +3,30 @@ describe 'recommendations routes', ->
     it 'should work', ->
       ns = random_namespace()
       start_server
-      .then( ->
+      .then(->
         client.create_namespace(ns)
       )
-      .then( ->
+      .then(->
         client.create_recommendations({namespace: ns, person: 'p'})
       )
-      .spread( (body, resp) ->
+      .spread((body, resp) ->
         body.recommendations.length.should.equal 0
       )
 
     it 'should return recommendations', ->
       ns = random_namespace()
       start_server
-      .then( ->
+      .then(->
         client.create_namespace(ns)
       )
-      .then( ->
+      .then(->
         events = []
         events.push {namespace: ns, person: 'alice', action: 'views', thing: 'LOTR', expires_at: tomorrow}
         events.push {namespace: ns, person: 'alice', action: 'views', thing: 'XMEN', expires_at: tomorrow}
-        events.push {namespace: ns, person: 'bob', action: 'views', thing: 'XMEN',  expires_at: tomorrow}
+        events.push {namespace: ns, person: 'bob', action: 'views', thing: 'XMEN', expires_at: tomorrow}
         client.create_events(events)
       )
-      .then( ->
+      .then(->
         client.create_recommendations({
           namespace: ns,
           person: 'bob',
@@ -36,7 +36,7 @@ describe 'recommendations routes', ->
           }
         })
       )
-      .spread( (body, resp) ->
+      .spread((body, resp) ->
         body.recommendations.length.should.equal 1
         body.recommendations[0].thing.should.equal 'LOTR'
       )
@@ -44,10 +44,10 @@ describe 'recommendations routes', ->
     it 'should 404 on bad namespace', ->
       ns = random_namespace()
       start_server
-      .then( ->
+      .then(->
         client.create_recommendations({namespace: ns, person: 'p'})
       )
-      .then( ->
+      .then(->
         throw "SHOULD NOT GET HERE"
       )
       .catch(GERClient.Not200Error, (e) ->

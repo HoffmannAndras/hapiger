@@ -17,23 +17,23 @@ namespace_request_schema = Joi.object().keys({
 })
 
 configuration_schema = Joi.object().keys({
-  actions:                       Joi.object()
-  minimum_history_required:      Joi.number().integer().min(0)
-  neighbourhood_search_size:     Joi.number().integer().min(1).max(250)
-  similarity_search_size:        Joi.number().integer().min(1).max(250)
-  neighbourhood_size:            Joi.number().integer().min(1).max(250)
+  actions: Joi.object()
+  minimum_history_required: Joi.number().integer().min(0)
+  neighbourhood_search_size: Joi.number().integer().min(1).max(250)
+  similarity_search_size: Joi.number().integer().min(1).max(250)
+  neighbourhood_size: Joi.number().integer().min(1).max(250)
   recommendations_per_neighbour: Joi.number().integer().min(1).max(250)
-  filter_previous_actions:       Joi.array().items(Joi.string())
-  event_decay_rate:              Joi.number().min(1).max(10)
-  time_until_expiry:             Joi.number().integer().min(0).max(2678400) #seconds in a month
-  current_datetime:              Joi.date().iso()
-  post_process_with:             Joi.array()
+  filter_previous_actions: Joi.array().items(Joi.string())
+  event_decay_rate: Joi.number().min(1).max(10)
+  time_until_expiry: Joi.number().integer().min(0).max(2678400) #seconds in a month
+  current_datetime: Joi.date().iso()
+  post_process_with: Joi.array()
 })
 
 recommendation_request_schema = Joi.object().keys({
   count: Joi.number().integer().min(1).max(200)
   person: Joi.string()
-  thing:  Joi.string()
+  thing: Joi.string()
   namespace: namespace_schema.required()
   configuration: configuration_schema
 }).xor('person', 'thing')
@@ -71,7 +71,6 @@ Utils.handle_error = (logger, err, reply) ->
     reply({error: "An unexpected error occurred"}).code(500)
 
 
-
 GERAPI =
   register: (plugin, options, next) ->
     ger = options.ger
@@ -83,10 +82,10 @@ GERAPI =
       path: '/namespaces',
       handler: (request, reply) =>
         ger.list_namespaces()
-        .then( (namespaces) ->
+        .then((namespaces) ->
           reply({namespaces: namespaces})
         )
-        .catch((err) -> Utils.handle_error(request, err, reply) )
+        .catch((err) -> Utils.handle_error(request, err, reply))
     )
 
     plugin.route(
@@ -95,14 +94,14 @@ GERAPI =
       handler: (request, reply) =>
         namespace = request.params.namespace
         ger.namespace_exists(namespace)
-        .then( (exists) ->
+        .then((exists) ->
           throw Boom.notFound() if !exists
           ger.destroy_namespace(namespace)
         )
-        .then( ->
+        .then(->
           reply({namespace: namespace})
         )
-        .catch((err) -> Utils.handle_error(request, err, reply) )
+        .catch((err) -> Utils.handle_error(request, err, reply))
     )
 
     plugin.route(
@@ -118,10 +117,10 @@ GERAPI =
       handler: (request, reply) =>
         namespace = request.payload.namespace
         ger.initialize_namespace(namespace)
-        .then( ->
+        .then(->
           reply({namespace: namespace})
         )
-        .catch((err) -> Utils.handle_error(request, err, reply) )
+        .catch((err) -> Utils.handle_error(request, err, reply))
     )
 
     ########### EVENTS routes ################
@@ -138,13 +137,13 @@ GERAPI =
           payload: events_request_schema
       handler: (request, reply) =>
         ger.events(request.payload.events)
-        .then( (event) ->
+        .then((event) ->
           reply(request.payload)
         )
         .catch(GER.NamespaceDoestNotExist, (err) ->
           Utils.handle_error(request, Boom.notFound("Namespace Not Found"), reply)
         )
-        .catch((err) -> Utils.handle_error(request, err, reply) )
+        .catch((err) -> Utils.handle_error(request, err, reply))
     )
 
     #DELETE delete event
@@ -155,14 +154,14 @@ GERAPI =
         namespace = request.params.namespace
         thing = request.params.thing
         ger.namespace_exists(namespace)
-        .then( (exists) ->
+        .then((exists) ->
           throw Boom.notFound() if !exists
           ger.delete_events(namespace, {thing: thing})
         )
-        .then( ->
+        .then(->
           reply({namespace: namespace})
         )
-        .catch((err) -> Utils.handle_error(request, err, reply) )
+        .catch((err) -> Utils.handle_error(request, err, reply))
     )
 
     #GET event information
@@ -180,10 +179,10 @@ GERAPI =
           thing: request.query.thing
         }
         ger.find_events(request.query.namespace, query)
-        .then( (events) ->
+        .then((events) ->
           reply({"events": events})
         )
-        .catch((err) -> Utils.handle_error(request, err, reply) )
+        .catch((err) -> Utils.handle_error(request, err, reply))
     )
 
 
@@ -200,14 +199,13 @@ GERAPI =
         validate:
           payload: recommendation_request_schema
       handler: (request, reply) =>
-
         person = request.payload.person
         thing = request.payload.thing
         namespace = request.payload.namespace
         configuration = _.defaults(request.payload.configuration, default_configuration)
 
         ger.namespace_exists(namespace)
-        .then( (exists) ->
+        .then((exists) ->
           throw Boom.notFound() if !exists
           if thing
             promise = ger.recommendations_for_thing(namespace, thing, configuration)
@@ -216,7 +214,7 @@ GERAPI =
 
           promise
         )
-        .then( (recommendations) ->
+        .then((recommendations) ->
           reply(recommendations)
         )
         .catch((err) -> Utils.handle_error(request, err, reply))
@@ -236,20 +234,20 @@ GERAPI =
       handler: (request, reply) =>
         ns = request.payload.namespace
         ger.namespace_exists(ns)
-        .then( (exists) ->
+        .then((exists) ->
           throw Boom.notFound() if !exists
           ger.estimate_event_count(ns)
         )
-        .then( (init_count) ->
-          bb.all( [init_count, ger.compact_database(ns)] )
+        .then((init_count) ->
+          bb.all([init_count, ger.compact_database(ns)])
         )
         .spread((init_count) ->
-          bb.all( [ init_count, ger.estimate_event_count(ns)] )
+          bb.all([init_count, ger.estimate_event_count(ns)])
         )
         .spread((init_count, end_count) ->
-          reply({ init_count: init_count, end_count: end_count, compression: "#{(1 - (end_count/init_count)) * 100}%" })
+          reply({init_count: init_count, end_count: end_count, compression: "#{(1 - (end_count / init_count)) * 100}%"})
         )
-        .catch((err) -> Utils.handle_error(request, err, reply) )
+        .catch((err) -> Utils.handle_error(request, err, reply))
     )
 
     next()

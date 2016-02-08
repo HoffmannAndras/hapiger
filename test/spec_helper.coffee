@@ -30,8 +30,8 @@ global.client = null
 
 
 global.start_server = server.initialize()
-.then( -> server.start())
-.then( ->
+.then(-> server.start())
+.then(->
   global.client = new GERClient("#{server.info.uri}")
   server
 )
@@ -40,6 +40,6 @@ global.random_namespace = ->
   "namespace_#{_.random(0, 99999999)}"
 
 global.tomorrow = moment().add(1, 'days').format()
-global.today =  moment().format()
+global.today = moment().format()
 global.yesterday = moment().subtract(1, 'days').format()
-global.tenMinutesAgo =  moment().subtract(10, 'minutes').format()
+global.tenMinutesAgo = moment().subtract(10, 'minutes').format()

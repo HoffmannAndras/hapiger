@@ -21,7 +21,7 @@
     "hapiger": "./bin/hapiger"
   },
   "license": "MIT",
-  "dependencies"  : {
+  "dependencies": {
     "hapi": "10.4.1",
     "joi": "6.9.0",
     "boom": "2.9.0",

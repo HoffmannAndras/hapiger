@@ -20,9 +20,9 @@ process_response = (res) ->
   [json, status]
 
 class GERClient
-  constructor : (@server_uri) ->
+  constructor: (@server_uri) ->
 
-  ########### NAMESPACE routes ################
+########### NAMESPACE routes ################
 
   destroy_namespace: (namespace) ->
     req = {
@@ -50,7 +50,7 @@ class GERClient
     .then(process_response)
 
 
-  ########### EVENTS routes ################
+########### EVENTS routes ################
 
   create_events: (events) ->
     req = {
@@ -61,7 +61,7 @@ class GERClient
     request(req)
     .then(process_response)
 
-  delete_events: (namespace,thing) ->
+  delete_events: (namespace, thing) ->
     req = {
       method: "DELETE",
       uri: "#{@server_uri}/events/#{namespace}/#{thing}"
@@ -77,12 +77,12 @@ class GERClient
     params.push "action=#{action}" if action
     params.push "thing=#{thing}" if thing
     uri += params.join('&')
-    req = { method: "GET", uri: uri}
+    req = {method: "GET", uri: uri}
     request(req)
     .then(process_response)
 
 
-  ########### RECOMMENDATIONS routes ################
+########### RECOMMENDATIONS routes ################
 
   create_recommendations: (rec_body) ->
     req = {
@@ -95,7 +95,7 @@ class GERClient
     .then(process_response)
 
 
-  ########### Maintenance routes ################
+########### Maintenance routes ################
 
   create_compact: (namespace) ->
     req = {

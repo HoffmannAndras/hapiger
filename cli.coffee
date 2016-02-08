@@ -7,28 +7,26 @@ chalk = require 'chalk'
 HapiGER = require('./lib/hapi_server')
 
 
-
 cli = ->
-
-  environment = _.defaults( process.env, {
+  environment = _.defaults(process.env, {
     PORT: 4567
   })
 
 
   program
-    .version('0.0.2')
-    .usage('[options]')
-    .description('start a hapiger server')
-    .option('-p, --port <port>', 'the port to start the server on', 3456)
-    .option('-e, --es <esm>', 'select Event Store [memory, pg, rethinkdb]', 'memory')
-    .option('-E, --esoptions <options>', 'JSON representation of Options for Event Store e.g. "{"url": "postgres://localhost/hapiger"}"
+  .version('0.0.2')
+  .usage('[options]')
+  .description('start a hapiger server')
+  .option('-p, --port <port>', 'the port to start the server on', 3456)
+  .option('-e, --es <esm>', 'select Event Store [memory, pg, rethinkdb]', 'memory')
+  .option('-E, --esoptions <options>', 'JSON representation of Options for Event Store e.g. "{"url": "postgres://localhost/hapiger"}"
       \n\t memory -- {}
       \n\t pg -- {"url" : "postgres url"}
       \n\t rethinkdb -- "{"host": "rethinkdb host", "port": "rethink port", "db": "rethink database"}
       ', ((input) -> JSON.parse(input)), {})
-    .option('-v, --verbose', "More Output", false)
-    .option('-D --default_configuration', "Default Configuration to generate recommendations", {})
-    .parse(process.argv);
+  .option('-v, --verbose', "More Output", false)
+  .option('-D --default_configuration', "Default Configuration to generate recommendations", {})
+  .parse(process.argv);
 
   verbose = program.verbose
 
@@ -42,7 +40,7 @@ cli = ->
   })
 
   hapiger.initialize()
-  .then( -> hapiger.start())
+  .then(-> hapiger.start())
   .catch((e) -> console.log "ERROR"; console.log e.stack)
 
 

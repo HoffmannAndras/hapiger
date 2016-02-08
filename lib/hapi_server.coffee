@@ -1,4 +1,3 @@
-
 #PROMISES LIBRARY
 bb = require 'bluebird'
 _ = require "underscore"
@@ -32,7 +31,7 @@ class HapiGER
       logging_options: {
         reporters: [{
           reporter: require('good-console'),
-          events: { log: '*', response: '*' }
+          events: {log: '*', response: '*'}
         }]
       }
     })
@@ -57,21 +56,21 @@ class HapiGER
         throw new Error("no such esm")
 
   initialize: () ->
-    bb.try( => @init_server())
-    .then( => @setup_server())
-    .then( => @add_server_routes())
+    bb.try(=> @init_server())
+    .then(=> @setup_server())
+    .then(=> @add_server_routes())
 
   init_server: (esm = 'mem') ->
-    #SETUP SERVER
+#SETUP SERVER
     @_server = new Hapi.Server()
-    @_server.connection({ port: @options.port });
+    @_server.connection({port: @options.port});
     @info = @_server.info
 
   setup_server: ->
     @load_server_plugin('good', @options.logging_options)
 
   add_server_routes: ->
-    @load_server_plugin('./the_hapi_ger', {ger : @_ger})
+    @load_server_plugin('./the_hapi_ger', {ger: @_ger})
 
   server_method: (method, args = []) ->
     d = bb.defer()
@@ -103,18 +102,17 @@ class HapiGER
 
   start_server: ->
     d = bb.defer()
-    @_server.start( =>
+    @_server.start(=>
       d.resolve(@)
     )
     d.promise
 
   stop_server: ->
     d = bb.defer()
-    @_server.stop( ->
+    @_server.stop(->
       d.resolve()
     )
     d.promise
-
 
 
 module.exports = HapiGER
