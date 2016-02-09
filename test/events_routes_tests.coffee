@@ -53,9 +53,12 @@ describe 'events routes', ->
       )
       .then(->
         client.create_events([{namespace: ns, person: 'p', action: 'a', thing: 't1'}])
+        client.create_events([{namespace: ns, person: 'p', action: 'a', thing: 't2'}])
+        client.create_events([{namespace: ns, person: 'p', action: 'a', thing: 't3'}])
       )
       .then(->
         client.delete_events(ns, {thing: 't1'})
+        client.delete_events(ns, {thing: 't2'})
       )
       .spread((body, resp) ->
         client.show_events(ns, 'p')
